@@ -5,19 +5,30 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy import Item, Field
 
 
-class XspiderItem(scrapy.Item):
+class XspiderItem(Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    # name = Field()
     pass
 
 
-class MeizituItem(scrapy.Item):
-    title = scrapy.Field()
-    tags = scrapy.Field()
-    url = scrapy.Field()
-    day = scrapy.Field()
-    month_year = scrapy.Field()
-    image_urls = scrapy.Field()
+class MeizituItem(Item):
+    title = Field()
+    tags = Field()
+    url = Field()
+    day = Field()
+    month_year = Field()
+    image_urls = Field()
+
+
+class EbayItem(Item):
+    item_id = Field()
+    url = Field()
+    title = Field()
+    subtitle = Field()
+    price = Field()
+    price_type = Field()
+    extra = Field()
+    country = Field()
