@@ -17,10 +17,10 @@ NEWSPIDER_MODULE = 'xspider.spiders'
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 
-DOWNLOAD_DELAY = 1    # 1 s of delay
+DOWNLOAD_DELAY = 2    # 1 s of delay
 
 ITEM_PIPELINES = {
-    # 'xspider.pipelines.ImageDownloadPipeline': 1,
+    'xspider.pipelines.ImageDownloadPipeline': 1,
     'xspider.pipelines.EbayItemPipeline': 1,
 }
 

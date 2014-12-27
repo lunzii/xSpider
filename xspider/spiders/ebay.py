@@ -14,11 +14,12 @@ LIST_ITEM_ID = "@listingid"
 # 链接
 LIST_ITEM_URL = "h3[@class='lvtitle']/a/@href"
 # 标题
-LIST_ITEM_TITLE = "h3[@class='lvtitle']/a/text()"
+LIST_ITEM_TITLE = "h3[@class='lvtitle']/a/node()"
+# LIST_ITEM_TITLE = "h3[@class='lvtitle']/a/@title"
 # 副标题
 LIST_ITEM_SUBTITLE = "div[@class='lvsubtitle']/text()"
 # 价格
-LIST_ITEM_PRICE = "ul/li[@class='lvprice prc']/span/text()"
+LIST_ITEM_PRICE = "ul/li[@class='lvprice prc']/span/node()"
 # 类型
 LIST_ITEM_PRICE_TYPE = "ul/li[@class='lvformat bin']/span/text()"
 # 红色字体
@@ -36,6 +37,13 @@ class EbaySpider(scrapy.Spider):
     allowed_domains = ["ebay.com"]
     start_urls = (
         'http://www.ebay.com/sch/Cell-Phone-Accessories-/9394/i.html',
+        'http://www.ebay.com/sch/Smart-Watches-/178893/i.html',
+        # 'http://www.ebay.com/sch/Replacement-Parts-Tools-/43304/i.html',
+        # 'http://www.ebay.com/sch/Wholesale-Lots-/45065/i.html',
+        'http://www.ebay.com/sch/iPad-Tablet-eBook-Accessories-/176970/i.html',
+        'http://www.ebay.com/sch/Radio-Control-Control-Line-/2562/i.html',
+        'http://www.ebay.com/sch/Portable-Audio-Headphones-/15052/i.html',
+        'http://www.ebay.com/sch/Laptop-Desktop-Accessories-/31530/i.html',
     )
 
     def parse(self, response):
