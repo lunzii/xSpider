@@ -35,19 +35,70 @@ LIST_NEXT_PAGE = "//td[@class='pagn-next']/a/@href"
 class EbaySpider(scrapy.Spider):
     name = "ebay"
     allowed_domains = ["ebay.com"]
-    start_urls = (
+    start_urls = [
+        'http://www.ebay.com/sch/Cell-Phones-Smartphones-/9355/i.html',
         'http://www.ebay.com/sch/Cell-Phone-Accessories-/9394/i.html',
         'http://www.ebay.com/sch/Smart-Watches-/178893/i.html',
-        # 'http://www.ebay.com/sch/Replacement-Parts-Tools-/43304/i.html',
-        # 'http://www.ebay.com/sch/Wholesale-Lots-/45065/i.html',
-        'http://www.ebay.com/sch/iPad-Tablet-eBook-Accessories-/176970/i.html',
-        'http://www.ebay.com/sch/Radio-Control-Control-Line-/2562/i.html',
+
+        'http://www.ebay.com/sch/iPads-Tablets-eBook-Readers-/171485/i.html',
+        'http://www.ebay.com/sch/Cables-Connectors-/31491/i.html',
+        'http://www.ebay.com/sch/Home-Networking-Connectivity-/11176/i.html',
+        'http://www.ebay.com/sch/Drives-Storage-Blank-Media-/165/i.html',
+
         'http://www.ebay.com/sch/Portable-Audio-Headphones-/15052/i.html',
-        'http://www.ebay.com/sch/Laptop-Desktop-Accessories-/31530/i.html',
-    )
+        'http://www.ebay.com/sch/Home-Automation-/50582/i.html',
+        'http://www.ebay.com/sch/Home-Surveillance-/48633/i.html',
+        'http://www.ebay.com/sch/Vehicle-Electronics-GPS-/3270/i.html',
+        'http://www.ebay.com/sch/Multipurpose-Batteries-Power-/48446/i.html',
+
+        'http://www.ebay.com/sch/Educational-/11731/i.html',
+        'http://www.ebay.com/sch/Radio-Control-Control-Line-/2562/i.html',
+
+        'http://www.ebay.com/sch/Cycling-/7294/i.html',
+        'http://www.ebay.com/sch/Fitness-Running-Yoga-/15273/i.html',
+        'http://www.ebay.com/sch/Outdoor-Sports-/159043/i.html',
+    ]
+
+    def get_category(self, url):
+        if 'Cell-Phones-Smartphones-' in url:
+            return 1001
+        elif 'Cell-Phone-Accessories-' in url:
+            return 1002
+        elif 'Smart-Watches-' in url:
+            return 1003
+        elif 'iPads-Tablets-eBook-Readers-' in url:
+            return 2001
+        elif 'Cables-Connectors-' in url:
+            return 2002
+        elif 'Home-Networking-Connectivity-' in url:
+            return 2003
+        elif 'Drives-Storage-Blank-Media-' in url:
+            return 2004
+        elif 'Portable-Audio-Headphones-' in url:
+            return 3001
+        elif 'Home-Automation-' in url:
+            return 3002
+        elif 'Home-Surveillance-' in url:
+            return 3003
+        elif 'Vehicle-Electronics-GPS-' in url:
+            return 3004
+        elif 'Multipurpose-Batteries-Power-' in url:
+            return 3005
+        elif 'Educational-' in url:
+            return 4001
+        elif 'Radio-Control-Control-Line-' in url:
+            return 4002
+        elif 'Cycling-' in url:
+            return 5001
+        elif 'Fitness-Running-Yoga-' in url:
+            return 5002
+        elif 'Outdoor-Sports-' in url:
+            return 5003
+        return 0
 
     def parse(self, response):
         print('--------------------start parse---------------------')
+        category = self.get_category(response.request.url)
         # 起始页
         sel = Selector(response)
         items = sel.xpath(LIST_ITEMS)
@@ -59,8 +110,9 @@ class EbaySpider(scrapy.Spider):
             ebay.add_xpath('subtitle', LIST_ITEM_SUBTITLE)
             ebay.add_xpath('price', LIST_ITEM_PRICE)
             ebay.add_xpath('price_type', LIST_ITEM_PRICE_TYPE)
-            ebay.add_xpath('extra', LIST_ITEM_EXTRA)
+            ebay.add_xpath('sold', LIST_ITEM_EXTRA)
             ebay.add_xpath('country', LIST_ITEM_COUNTRY)
+            ebay.add_value('category', category)
             yield ebay.load_item()
 
         # 下一页

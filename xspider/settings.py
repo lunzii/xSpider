@@ -25,3 +25,8 @@ ITEM_PIPELINES = {
 }
 
 DATA_STORE = '/Users/olunx/Documents/spiders'
+
+import sys
+import os
+sys.path.append('/Users/olunx/Documents/workspace/xTrade')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'xTrade.settings'

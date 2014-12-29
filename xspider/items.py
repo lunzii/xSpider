@@ -6,7 +6,8 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 from scrapy import Item, Field
-
+from scrapy.contrib.djangoitem import DjangoItem
+from core.models import EbayStuff
 
 class XspiderItem(Item):
     # define the fields for your item here like:
@@ -22,13 +23,16 @@ class MeizituItem(Item):
     month_year = Field()
     image_urls = Field()
 
+# class EbayItem(Item):
+#     item_id = Field()
+#     url = Field()
+#     title = Field()
+#     subtitle = Field()
+#     price = Field()
+#     price_type = Field()
+#     extra = Field()
+#     country = Field()
 
-class EbayItem(Item):
-    item_id = Field()
-    url = Field()
-    title = Field()
-    subtitle = Field()
-    price = Field()
-    price_type = Field()
-    extra = Field()
-    country = Field()
+
+class EbayItem(DjangoItem):
+    django_model = EbayStuff

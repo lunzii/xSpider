@@ -12,12 +12,7 @@ from scrapy import signals
 from xspider import settings
 from xlsxwriter import Workbook
 from bs4 import BeautifulSoup
-
-
-class XspiderPipeline(object):
-    def process_item(self, item, spider):
-        print('---------------------XspiderPipeline ----------------------')
-        return item
+from django.db import IntegrityError
 
 
 class ImageDownloadPipeline(object):
@@ -52,7 +47,7 @@ class EbayItemPipeline(object):
         print('---------------------EbayItemPipeline init----------------------')
         self.xlsx_file_name = 'items.xlsx'
         self.csv_file_name = 'items.csv'
-        self.csv_file = csv.writer(open(self.csv_file_name, 'w'))
+        # self.csv_file = csv.writer(open(self.csv_file_name, 'w'))
 
 
     @classmethod
@@ -64,11 +59,11 @@ class EbayItemPipeline(object):
 
     def spider_opened(self, spider):
         print('---------------------EbayItemPipeline opened----------------------')
-        self.csv_file.writerow(['Item ID', 'Title', 'Price', 'Sold', 'Watching', 'Country', 'Subtitle', 'Price Type', 'URL'])
+        # self.csv_file.writerow(['Item ID', 'Title', 'Price', 'Sold', 'Watching', 'Country', 'Subtitle', 'Price Type', 'URL'])
 
     def spider_closed(self, spider):
         print('---------------------EbayItemPipeline closed----------------------')
-        self.csv_to_xlsx(self.csv_file_name)
+        # self.csv_to_xlsx(self.csv_file_name)
 
     def process_item(self, item, spider):
         if spider.name not in ['ebay']:
@@ -76,13 +71,14 @@ class EbayItemPipeline(object):
         print('---------------------EbayItemPipeline ----------------------')
         item_id = self.get_text(item.get('item_id'))
         url = self.get_text(item.get('url'))
-        title = BeautifulSoup(self.get_text(item.get('title'))).get_text().strip()
-        subtitle = self.get_text(item.get('subtitle'))
+        title = BeautifulSoup(self.get_text_title(item.get('title'))).get_text().strip()
+        subtitle = self.get_text_title(item.get('subtitle'))
         price = BeautifulSoup(self.get_text(item.get('price'))).get_text().strip()
         price_type = self.get_text(item.get('price_type'))
-        sold = self.get_text_sold(item.get('extra'))
-        watching = self.get_text_watching(item.get('extra'))
+        sold = self.get_text_sold(item.get('sold'))
+        watching = self.get_text_watching(item.get('sold'))
         country = self.get_text_country(item.get('country'))
+        category = item.get('category')[0]
         # title = item.get('title')
         # subtitle = item.get('subtitle')
         # price = item.get('price')
@@ -98,12 +94,34 @@ class EbayItemPipeline(object):
         print(sold)
         print(watching)
         print(country)
+        print(category)
         print('\n')
-        if sold is not None or watching is not None:
-            row = [item_id, title, price, sold, watching, country, subtitle, price_type, url]
-            self.csv_file.writerow([unicode(s).encode('utf-8') for s in row])
-
+        if sold != 0 or watching != 0:
+            # row = [item_id, title, price, sold, watching, country, subtitle, price_type, url]
+            # self.csv_file.writerow([unicode(s).encode('utf-8') for s in row])
+            item['item_id'] = item_id
+            item['url'] = url
+            item['title'] = title
+            item['subtitle'] = subtitle
+            item['price'] = price
+            item['price_type'] = price_type
+            item['sold'] = sold
+            item['watching'] = watching
+            item['country'] = country
+            item['category'] = category
+            try:
+                item.save()
+            except IntegrityError:
+                pass
         return item
+
+    def get_text_title(self, item):
+        if item and len(item) > 0:
+            if 'New listing' in item[0]:
+                return item[1].strip()
+            else:
+                return item[0].strip()
+        return ''
 
     def get_text(self, item):
         if item and len(item) > 0:
@@ -112,16 +130,16 @@ class EbayItemPipeline(object):
 
     def get_text_country(self, item):
         if item and len(item) > 0:
-            return item[0].strip()
+            return item[0].replace('From', '').strip()
         return ''
 
     def get_text_sold(self, item):
         if item and len(item) > 0:
             text = item[0].strip()
             # if 'sold' in text:
-            if 'sold' in text and len(text) > 7:
+            if 'sold' in text and len(text) > 6:
                 return text.replace('+', '').replace('sold', '').strip()
-        return None
+        return 0
 
     def get_text_watching(self, item):
         if item and len(item) > 0:
@@ -130,7 +148,7 @@ class EbayItemPipeline(object):
                 for i in item:
                     if 'watching' in i:
                         return i.replace('+', '').replace('watching', '').strip()
-        return None
+        return 0
 
     def csv_to_xlsx(self, csv_file):
         workbook = Workbook(self.xlsx_file_name)
