@@ -34,7 +34,7 @@ class MeizituSpider(scrapy.Spider):
         sel = Selector(response)
         for url in sel.xpath(LIST_URLS).extract():
             print('url: %s' % url)
-            request = scrapy.Request(url, callback=self.parse_item)
+            request = scrapy.Request(url, callback=self._parse_item)
             yield request
 
         # 下一页
@@ -49,7 +49,7 @@ class MeizituSpider(scrapy.Spider):
         print('---------------------end parse----------------------')
         pass
 
-    def parse_item(self, response):
+    def _parse_item(self, response):
         print('--------------------start item : %s' % response.url)
         item = ItemLoader(item=MeizituItem(), response=response)
         item.add_xpath('title', ITEM_TITLE)

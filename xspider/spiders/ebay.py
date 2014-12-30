@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import csv
+
 import scrapy
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader, Identity

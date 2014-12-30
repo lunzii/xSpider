@@ -6,13 +6,12 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import os
-import csv
 import requests
-from scrapy import signals
-from xspider import settings
-from xlsxwriter import Workbook
 from bs4 import BeautifulSoup
 from django.db import IntegrityError
+from scrapy.selector import Selector
+
+from xspider import settings
 
 
 class ImageDownloadPipeline(object):
@@ -45,25 +44,6 @@ class EbayItemPipeline(object):
 
     def __init__(self):
         print('---------------------EbayItemPipeline init----------------------')
-        self.xlsx_file_name = 'items.xlsx'
-        self.csv_file_name = 'items.csv'
-        # self.csv_file = csv.writer(open(self.csv_file_name, 'w'))
-
-
-    @classmethod
-    def from_crawler(cls, crawler):
-         pipeline = cls()
-         crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
-         crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
-         return pipeline
-
-    def spider_opened(self, spider):
-        print('---------------------EbayItemPipeline opened----------------------')
-        # self.csv_file.writerow(['Item ID', 'Title', 'Price', 'Sold', 'Watching', 'Country', 'Subtitle', 'Price Type', 'URL'])
-
-    def spider_closed(self, spider):
-        print('---------------------EbayItemPipeline closed----------------------')
-        # self.csv_to_xlsx(self.csv_file_name)
 
     def process_item(self, item, spider):
         if spider.name not in ['ebay']:
@@ -73,7 +53,7 @@ class EbayItemPipeline(object):
         url = self.get_text(item.get('url'))
         title = BeautifulSoup(self.get_text_title(item.get('title'))).get_text().strip()
         subtitle = self.get_text_title(item.get('subtitle'))
-        price = BeautifulSoup(self.get_text(item.get('price'))).get_text().strip()
+        price = BeautifulSoup(self.get_text_price(item.get('price'))).get_text().strip()
         price_type = self.get_text(item.get('price_type'))
         sold = self.get_text_sold(item.get('sold'))
         watching = self.get_text_watching(item.get('sold'))
@@ -96,7 +76,8 @@ class EbayItemPipeline(object):
         print(country)
         print(category)
         print('\n')
-        if sold != 0 or watching != 0:
+        # if sold != 0 or watching != 0:
+        if sold != 0:
             # row = [item_id, title, price, sold, watching, country, subtitle, price_type, url]
             # self.csv_file.writerow([unicode(s).encode('utf-8') for s in row])
             item['item_id'] = item_id
@@ -115,6 +96,11 @@ class EbayItemPipeline(object):
                 pass
         return item
 
+    def get_text(self, item):
+        if item and len(item) > 0:
+            return ' '.join(str(x).strip() for x in item).strip()
+        return ''
+
     def get_text_title(self, item):
         if item and len(item) > 0:
             if 'New listing' in item[0]:
@@ -123,10 +109,11 @@ class EbayItemPipeline(object):
                 return item[0].strip()
         return ''
 
-    def get_text(self, item):
-        if item and len(item) > 0:
-            return ' '.join(str(x).strip() for x in item).strip()
-        return ''
+    def get_text_price(self, item):
+        price = self.get_text(item)
+        if price and 'to' in price:
+            price = price[0:price.index('to')-2].strip()
+        return price
 
     def get_text_country(self, item):
         if item and len(item) > 0:
@@ -150,29 +137,53 @@ class EbayItemPipeline(object):
                         return i.replace('+', '').replace('watching', '').strip()
         return 0
 
-    def csv_to_xlsx(self, csv_file):
-        workbook = Workbook(self.xlsx_file_name)
-        worksheet = workbook.add_worksheet()
-        worksheet.set_column('A:A', 12)
-        worksheet.set_column('B:B', 75)
-        worksheet.set_column('C:C', 20)
-        worksheet.set_column('D:D', 15)
-        worksheet.set_column('E:E', 15)
-        worksheet.set_column('F:F', 20)
-        worksheet.set_column('G:G', 20)
-        worksheet.set_column('H:H', 15)
-        worksheet.set_column('I:I', 15)
-        reader = self.unicode_csv_reader(open(csv_file, 'rb'))
-        for r, row in enumerate(reader):
-            for c, col in enumerate(row):
-                if r > 0 and c == 8:
-                    worksheet.write_url(r, c, col, workbook.add_format({'color': 'blue', 'underline': 1}), u'点击我查看')
-                else:
-                    worksheet.write(r, c, col)
-        workbook.close()
-        workbook.close()
 
-    def unicode_csv_reader(self, utf8_data, dialect=csv.excel, **kwargs):
-        csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
-        for row in csv_reader:
-            yield [unicode(cell, 'utf-8') for cell in row]
+class AlibabaItemPipeline(object):
+
+    def __init__(self):
+        print('---------------------AlibabaItemPipeline init----------------------')
+
+    def process_item(self, item, spider):
+        if spider.name not in ['alibabachina']:
+            return item
+        print('---------------------AlibabaItemPipeline process_item----------------------')
+        url = item.get('url')[0]
+        title = self.get_text(item.get('title'))
+        price = BeautifulSoup(self.get_text(item.get('price'))).get_text().strip()
+        location = item.get('location')[0]
+        shipping = BeautifulSoup(self.get_text(item.get('shipping'))).get_text().strip()
+        content_url = item.get('content_url')
+        if content_url and len(content_url) > 0:
+            content_data = self.parse_content(content_url[0])
+            content_sel = Selector(text=content_data)
+            images = content_sel.xpath('//img/@src').extract()
+            content_text = content_sel.xpath('//p/text()').extract()
+        # print title
+        # print price
+        # print location
+        # print shipping
+        # print images
+        # print content_text
+        item['url'] = url
+        item['title'] = title
+        item['price'] = price
+        item['location'] = location
+        item['shipping'] = shipping
+        item['image'] = images
+        item['content'] = content_text
+        item.save()
+        return item
+
+    def parse_content(self, url):
+        # print('url: %s' % url)
+        response = requests.get(url)
+        if response and response.status_code == 200:
+            data = response.text[10:-3]
+            # print('response: %s' % data)
+            return data
+        return ''
+
+    def get_text(self, item):
+        if item and len(item) > 0:
+            return ' '.join(x.strip() for x in item).strip()
+        return ''

@@ -22,10 +22,12 @@ DOWNLOAD_DELAY = 2    # 1 s of delay
 ITEM_PIPELINES = {
     'xspider.pipelines.ImageDownloadPipeline': 1,
     'xspider.pipelines.EbayItemPipeline': 1,
+    'xspider.pipelines.AlibabaItemPipeline': 1,
 }
 
 DATA_STORE = '/Users/olunx/Documents/spiders'
 
+# 添加Django支持
 import sys
 import os
 sys.path.append('/Users/olunx/Documents/workspace/xTrade')
