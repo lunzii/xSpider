@@ -26,7 +26,7 @@ class AlibabachinaSpider(scrapy.Spider):
         if url and not url.startswith('http://') and not url.startswith('https://'):
             url = 'http://%s/' % url
         else:
-            url = 'http://detail.1688.com/offer/42653741002.html'
+            url = 'http://detail.1688.com/offer/42326799135.html'
         self.url = url
         # self.allowed_domains = [urlparse(url).hostname.lstrip('www.')]
         self.link_extractor = SgmlLinkExtractor()

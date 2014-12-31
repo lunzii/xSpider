@@ -157,13 +157,14 @@ class AlibabaItemPipeline(object):
             content_data = self.parse_content(content_url[0])
             content_sel = Selector(text=content_data)
             images = content_sel.xpath('//img/@src').extract()
-            content_text = content_sel.xpath('//p/text()').extract()
-        # print title
-        # print price
-        # print location
-        # print shipping
-        # print images
-        # print content_text
+            content_text = content_sel.xpath('//p/node()').extract()
+            content_text = self.get_text_content(content_text)
+        print title
+        print price
+        print location
+        print shipping
+        print images
+        print content_text
         item['url'] = url
         item['title'] = title
         item['price'] = price
@@ -187,3 +188,12 @@ class AlibabaItemPipeline(object):
         if item and len(item) > 0:
             return ' '.join(x.strip() for x in item).strip()
         return ''
+
+    def get_text_content(self, item):
+        data = ''
+        if item:
+            for i in item:
+                text = BeautifulSoup(i).get_text().strip()
+                if text and text != "":
+                    data += '%s\n' % text
+        return data
