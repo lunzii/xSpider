@@ -147,16 +147,17 @@ class AlibabaItemPipeline(object):
         if spider.name not in ['alibabachina']:
             return item
         print('---------------------AlibabaItemPipeline process_item----------------------')
-        item_id = item.get('item_id')
-        title = item.get('title')
+        item_id = self.get_text(item.get('item_id'))
+        title = self.get_text(item.get('title'))
         url = 'http://detail.1688.com/offer/%s.html' % item_id
-        company_id = item.get('company_id')
-        company_name = item.get('company_name')
-        company_url = item.get('company_url')
-        company_location = item.get('company_location')
-        sold_item = item.get('sold_item')
-        sold_person = item.get('sold_person')
-        price = item.get('price')
+        company_id = self.get_text(item.get('company_id'))
+        company_name = self.get_text(item.get('company_name'))
+        company_url = self.get_text(item.get('company_url'))
+        company_location = self.get_text(item.get('company_location'))
+        sold_item = self.get_text_sold(item.get('sold_item'))
+        sold_person = self.get_text(item.get('sold_person'))
+        price = self.get_text(item.get('price'))
+        category = item.get('category')[0]
         print(item_id)
         print(title)
         print(url)
@@ -167,36 +168,30 @@ class AlibabaItemPipeline(object):
         print(price)
         print(sold_item)
         print(sold_person)
+        print(category)
         print('------------')
-        # item['url'] = url
-        # item['title'] = title
-        # item['price'] = price
-        # item['location'] = location
-        # item['shipping'] = shipping
-        # item['image'] = images
-        # item['content'] = content_text
-        # item.save()
+        item['item_id'] = item_id
+        item['title'] = title
+        item['url'] = url
+        item['company_id'] = company_id
+        item['company_name'] = company_name
+        item['company_url'] = company_url
+        item['company_location'] = company_location
+        item['price'] = price
+        item['sold_item'] = sold_item
+        item['sold_person'] = sold_person
+        item['category'] = category
+        item.save()
         return item
-
-    def parse_content(self, url):
-        # print('url: %s' % url)
-        response = requests.get(url)
-        if response and response.status_code == 200:
-            data = response.text[10:-3]
-            # print('response: %s' % data)
-            return data
-        return ''
 
     def get_text(self, item):
         if item and len(item) > 0:
             return ' '.join(x.strip() for x in item).strip()
         return ''
 
-    def get_text_content(self, item):
-        data = ''
-        if item:
-            for i in item:
-                text = BeautifulSoup(i).get_text().strip()
-                if text and text != "":
-                    data += '%s\n' % text
-        return data
+    def get_text_sold(self, item):
+        price = self.get_text(item)
+        if u'万' in price:
+            price = price.replace(u'万', '')
+            price = int(float(price) * 10000)
+        return price

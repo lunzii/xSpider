@@ -7,7 +7,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from xspider.items import AlibabaChinaItem
 
 # 列表页数据
-LIST_ITEMS = 'LIST_ITEMS = "//*[@id="sw_maindata_asyncload"]/li"'
+LIST_ITEMS = '//*[@id="sw_maindata_asyncload"]/li'
 
 # 物品ID
 LIST_ITEM_ID = '@offerid'
@@ -20,13 +20,13 @@ LIST_ITEM_COMPANY_NAME = 'div[@class="sm-offerShopwindow-company fd-clr"]/a[@cla
 # 公司链接
 LIST_ITEM_COMPANY_URL = 'div[@class="sm-offerShopwindow-company fd-clr"]/a[@class="sm-previewCompany sw-mod-previewCompanyInfo"]/@href'
 # 公司所在地
-LIST_ITEM_COMPANY_LOCATION = '/div[@class="sm-offerShopwindow-summary fd-clr"]/span[@class="sm-offerShopwindow-summary-place"]/text()'
+LIST_ITEM_COMPANY_LOCATION = 'div[@class="sm-offerShopwindow-summary fd-clr"]/*[@class="sm-offerShopwindow-summary-place"]/text()'
 # 卖出数量
-LIST_ITEM_SOLD_ITEM = '/div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[1]/text()'
+LIST_ITEM_SOLD_ITEM = 'div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[1]/text()'
 # 购买人数
-LIST_ITEM_SOLD_PERSON = '/div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[2]/text()'
+LIST_ITEM_SOLD_PERSON = 'div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[2]/text()'
 # 价钱
-LIST_ITEM_PRICE = '/div[@class="sm-offerShopwindow-price"]/span[@class="su-price"]/text()'
+LIST_ITEM_PRICE = 'div[@class="sm-offerShopwindow-price"]/span[@class="su-price"]/text()'
 
 # 下一页
 LIST_NEXT_PAGE = '//*[@id="sw_mod_pagination_content"]/div/a[@class="page-next"]/@href'
@@ -40,8 +40,13 @@ class AlibabachinaSpider(scrapy.Spider):
         'http://s.1688.com/selloffer/--7.html?pageSize=20&quantityBegin=1',
     ]
 
+    def get_category(self, url):
+        if '--7.html' in url:
+            return 1001
+
     def parse(self, response):
         print('--------------------start parse---------------------')
+        category = self.get_category(response.request.url)
         # 起始页
         sel = Selector(response)
         items = sel.xpath(LIST_ITEMS)
@@ -55,17 +60,18 @@ class AlibabachinaSpider(scrapy.Spider):
             ebay.add_xpath('company_location', LIST_ITEM_COMPANY_LOCATION)
             ebay.add_xpath('price', LIST_ITEM_PRICE)
             ebay.add_xpath('sold_item', LIST_ITEM_SOLD_ITEM)
-            ebay.add_value('sold_person', LIST_ITEM_SOLD_PERSON)
+            ebay.add_xpath('sold_person', LIST_ITEM_SOLD_PERSON)
+            ebay.add_value('category', category)
             yield ebay.load_item()
 
         # 下一页
-        # next_page = sel.xpath(LIST_NEXT_PAGE).extract()
-        # print('next_page: %s' % next_page)
-        # if len(next_page) > 0:
-        #     next_page_url = next_page[0]
-        #     print('next_page_url: %s' % next_page_url)
-        #     request = scrapy.Request(next_page_url, callback=self.parse)
-        #     yield request
+        next_page = sel.xpath(LIST_NEXT_PAGE).extract()
+        print('next_page: %s' % next_page)
+        if len(next_page) > 0:
+            next_page_url = next_page[0]
+            print('next_page_url: %s' % next_page_url)
+            request = scrapy.Request(next_page_url, callback=self.parse)
+            yield request
 
         pass
 
