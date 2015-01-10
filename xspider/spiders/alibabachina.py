@@ -4,45 +4,69 @@ import scrapy
 from scrapy.selector import Selector, HtmlXPathSelector
 from scrapy.contrib.loader import ItemLoader, Identity
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from xspider.items import AlibabachinaItem
+from xspider.items import AlibabaChinaItem
 
-# Title
-ITEM_TITLE = '//*[@id="mod-detail-title"]/h1/text()'
-ITEM_PRICE = '//*[@id="mod-detail-price"]/div/table/tr[@class="price"]/td[2]/node()'
-ITEM_LOCATION = '//*[@id="mod-detail-bd"]/div[2]/div[6]/div/div/div[2]/div[1]/p[1]/span/text()'
-ITEM_SHIPPING = '//*[@id="mod-detail-bd"]/div[2]/div[6]/div/div/div[2]/div[2]/div/div/div/node()'
-ITEM_CONTENT = '//*[@id="desc-lazyload-container"]/@data-tfs-url'
-ITEM_IMAGE = '//img/@src'
+# 列表页数据
+LIST_ITEMS = 'LIST_ITEMS = "//*[@id="sw_maindata_asyncload"]/li"'
+
+# 物品ID
+LIST_ITEM_ID = '@offerid'
+# 物品名称
+LIST_ITEM_TITLE = 'h2[@class="sm-offerShopwindow-title"]/a[@class="sm-offerShopwindow-titleLink sw-ui-font-title12"]/text()'
+# 公司ID
+LIST_ITEM_COMPANY_ID = '@companyid'
+# 公司名
+LIST_ITEM_COMPANY_NAME = 'div[@class="sm-offerShopwindow-company fd-clr"]/a[@class="sm-previewCompany sw-mod-previewCompanyInfo"]/text()'
+# 公司链接
+LIST_ITEM_COMPANY_URL = 'div[@class="sm-offerShopwindow-company fd-clr"]/a[@class="sm-previewCompany sw-mod-previewCompanyInfo"]/@href'
+# 公司所在地
+LIST_ITEM_COMPANY_LOCATION = '/div[@class="sm-offerShopwindow-summary fd-clr"]/span[@class="sm-offerShopwindow-summary-place"]/text()'
+# 卖出数量
+LIST_ITEM_SOLD_ITEM = '/div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[1]/text()'
+# 购买人数
+LIST_ITEM_SOLD_PERSON = '/div[@class="sm-offerShopwindow-price"]/span[@class="sm-offerShopwindow-trade"]/em[2]/text()'
+# 价钱
+LIST_ITEM_PRICE = '/div[@class="sm-offerShopwindow-price"]/span[@class="su-price"]/text()'
+
+# 下一页
+LIST_NEXT_PAGE = '//*[@id="sw_mod_pagination_content"]/div/a[@class="page-next"]/@href'
 
 
 class AlibabachinaSpider(scrapy.Spider):
     name = "alibabachina"
     allowed_domains = ["1688.com"]
 
-    def __init__(self, **kw):
-        super(AlibabachinaSpider, self).__init__(**kw)
-        url = kw.get('url') or kw.get('page')
-        print('AlibabachinaSpider url: %s' % url)
-        if url and not url.startswith('http://') and not url.startswith('https://'):
-            url = 'http://%s/' % url
-        else:
-            url = 'http://detail.1688.com/offer/42326799135.html'
-        self.url = url
-        # self.allowed_domains = [urlparse(url).hostname.lstrip('www.')]
-        self.link_extractor = SgmlLinkExtractor()
-        # self.cookies_seen = set()
-
-    def start_requests(self):
-        return [scrapy.Request(self.url, callback=self.parse)]
+    start_urls = [
+        'http://s.1688.com/selloffer/--7.html?pageSize=20&quantityBegin=1',
+    ]
 
     def parse(self, response):
+        print('--------------------start parse---------------------')
+        # 起始页
         sel = Selector(response)
-        alibaba = ItemLoader(item=AlibabachinaItem(), selector=sel)
-        alibaba.add_value('url', self.url)
-        alibaba.add_xpath('title', ITEM_TITLE)
-        alibaba.add_xpath('price', ITEM_PRICE)
-        alibaba.add_xpath('location', ITEM_LOCATION)
-        alibaba.add_xpath('shipping', ITEM_SHIPPING)
-        alibaba.add_xpath('content_url', ITEM_CONTENT)
-        yield alibaba.load_item()
+        items = sel.xpath(LIST_ITEMS)
+        for index, item in enumerate(items):
+            ebay = ItemLoader(item=AlibabaChinaItem(), selector=item)
+            ebay.add_xpath('item_id', LIST_ITEM_ID)
+            ebay.add_xpath('title', LIST_ITEM_TITLE)
+            ebay.add_xpath('company_id', LIST_ITEM_COMPANY_ID)
+            ebay.add_xpath('company_name', LIST_ITEM_COMPANY_NAME)
+            ebay.add_xpath('company_url', LIST_ITEM_COMPANY_URL)
+            ebay.add_xpath('company_location', LIST_ITEM_COMPANY_LOCATION)
+            ebay.add_xpath('price', LIST_ITEM_PRICE)
+            ebay.add_xpath('sold_item', LIST_ITEM_SOLD_ITEM)
+            ebay.add_value('sold_person', LIST_ITEM_SOLD_PERSON)
+            yield ebay.load_item()
+
+        # 下一页
+        # next_page = sel.xpath(LIST_NEXT_PAGE).extract()
+        # print('next_page: %s' % next_page)
+        # if len(next_page) > 0:
+        #     next_page_url = next_page[0]
+        #     print('next_page_url: %s' % next_page_url)
+        #     request = scrapy.Request(next_page_url, callback=self.parse)
+        #     yield request
+
+        pass
+
 

@@ -147,32 +147,35 @@ class AlibabaItemPipeline(object):
         if spider.name not in ['alibabachina']:
             return item
         print('---------------------AlibabaItemPipeline process_item----------------------')
-        url = item.get('url')[0]
-        title = self.get_text(item.get('title'))
-        price = BeautifulSoup(self.get_text(item.get('price'))).get_text().strip()
-        location = item.get('location')[0]
-        shipping = BeautifulSoup(self.get_text(item.get('shipping'))).get_text().strip()
-        content_url = item.get('content_url')
-        if content_url and len(content_url) > 0:
-            content_data = self.parse_content(content_url[0])
-            content_sel = Selector(text=content_data)
-            images = content_sel.xpath('//img/@src').extract()
-            content_text = content_sel.xpath('//p/node()').extract()
-            content_text = self.get_text_content(content_text)
-        print title
-        print price
-        print location
-        print shipping
-        print images
-        print content_text
-        item['url'] = url
-        item['title'] = title
-        item['price'] = price
-        item['location'] = location
-        item['shipping'] = shipping
-        item['image'] = images
-        item['content'] = content_text
-        item.save()
+        item_id = item.get('item_id')
+        title = item.get('title')
+        url = 'http://detail.1688.com/offer/%s.html' % item_id
+        company_id = item.get('company_id')
+        company_name = item.get('company_name')
+        company_url = item.get('company_url')
+        company_location = item.get('company_location')
+        sold_item = item.get('sold_item')
+        sold_person = item.get('sold_person')
+        price = item.get('price')
+        print(item_id)
+        print(title)
+        print(url)
+        print(company_id)
+        print(company_name)
+        print(company_url)
+        print(company_location)
+        print(price)
+        print(sold_item)
+        print(sold_person)
+        print('------------')
+        # item['url'] = url
+        # item['title'] = title
+        # item['price'] = price
+        # item['location'] = location
+        # item['shipping'] = shipping
+        # item['image'] = images
+        # item['content'] = content_text
+        # item.save()
         return item
 
     def parse_content(self, url):

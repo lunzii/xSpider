@@ -8,7 +8,7 @@
 from scrapy import Item, Field
 from scrapy.contrib.djangoitem import DjangoItem
 from apps.ebay.models import EbayStuff
-from apps.alibabachina.models import AlibabachinaScrapy
+from apps.alibabachina.models import AlibabaChinaStuff
 
 class XspiderItem(Item):
     # define the fields for your item here like:
@@ -39,5 +39,5 @@ class EbayItem(DjangoItem):
     django_model = EbayStuff
 
 
-class AlibabachinaItem(DjangoItem):
-    django_model = AlibabachinaScrapy
+class AlibabaChinaItem(DjangoItem):
+    django_model = AlibabaChinaStuff
