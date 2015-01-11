@@ -23,6 +23,7 @@ ITEM_PIPELINES = {
     'xspider.pipelines.ImageDownloadPipeline': 1,
     'xspider.pipelines.EbayItemPipeline': 1,
     'xspider.pipelines.AlibabaItemPipeline': 1,
+    'xspider.pipelines.AliexpressItemPipeline': 1,
 }
 
 DATA_STORE = '/Users/olunx/Documents/spiders'

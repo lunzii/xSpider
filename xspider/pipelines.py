@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import os
+import re
 import requests
 from bs4 import BeautifulSoup
 from django.db import IntegrityError
@@ -195,3 +196,65 @@ class AlibabaItemPipeline(object):
             price = price.replace(u'万', '')
             price = int(float(price) * 10000)
         return price
+
+
+class AliexpressItemPipeline(object):
+
+    def __init__(self):
+        print('---------------------AliexpressItemPipeline init----------------------')
+
+    def process_item(self, item, spider):
+        print('spider: %s' % spider.name)
+        if spider.name not in ['aliexpress']:
+            return item
+        print('---------------------AliexpressItemPipeline process_item----------------------')
+        item_id = self.get_text(item.get('item_id'))
+        url = self.get_text(item.get('url'))
+        title = self.get_text(item.get('title'))
+        price = self.get_text(item.get('price'))
+        unit = self.get_text(item.get('unit'))
+        min_order = self.get_text(item.get('min_order'))
+        shipping = self.get_text(item.get('shipping'))
+        rate_num = self.get_text_num(item.get('rate_num'))
+        order_num = self.get_text_num(item.get('order_num'))
+        store_name = self.get_text(item.get('store_name'))
+        store_url = self.get_text(item.get('store_url'))
+        category = item.get('category')[0]
+        print(item_id)
+        print(url)
+        print(title)
+        print(price)
+        print(unit)
+        print(min_order)
+        print(shipping)
+        print(rate_num)
+        print(order_num)
+        print(store_name)
+        print(store_url)
+        print(category)
+        print('------------')
+        item['item_id'] = item_id
+        item['title'] = title
+        item['url'] = url
+        item['price'] = price
+        item['unit'] = unit
+        item['min_order'] = min_order
+        item['shipping'] = shipping
+        item['rate_num'] = rate_num
+        item['order_num'] = order_num
+        item['store_name'] = store_name
+        item['store_url'] = store_url
+        item['category'] = category
+        item.save()
+        return item
+
+    def get_text(self, item):
+        if item and len(item) > 0:
+            return ' '.join(x.strip() for x in item).strip()
+        return ''
+
+    def get_text_num(self, item):
+        item = re.findall(r'\d+', self.get_text(item))
+        if item and len(item) > 0:
+            return item[0]
+        return 0
