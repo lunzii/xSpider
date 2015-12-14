@@ -1,4 +1,0 @@
-xSpider
-=======
-
-scrapy project
