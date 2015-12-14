@@ -2,22 +2,15 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from app.models import LagouCompany
-from spiders.lagou import SpiderCompany
-from spiders.lagou import SpiderJob
+from app import tasks
 
 
 def lagou_company(request):
-    spider = SpiderCompany()
-    # spider.crawl()
-    spider.close()
+    tasks.crawl_lagou_company.delay()
     return HttpResponse('succeed')
 
 
 def lagou_job(request):
-    spider = SpiderJob()
-    items = LagouCompany.objects.all()
-    for item in items:
-        spider.crawl(company_id=item.company_id, save=True)
-    spider.close()
+    tasks.crawl_lagou_job.delay()
     return HttpResponse('succeed')
+

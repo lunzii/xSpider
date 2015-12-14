@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for xspider project.
 
@@ -37,8 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
+    'kombu.transport.django',
     'app'
 ]
+
+# Celery Settings
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'django://'
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
