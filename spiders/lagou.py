@@ -111,16 +111,16 @@ class SpiderJob:
         utils.info('--------------- 抓取数据开始 -----------------')
 
     # 爬取逻辑
-    def crawl(self, save=False, company_id=None):
+    def crawl(self, save=False, company_id=None, _id=None):
         self.save = save
         if not company_id:
             return
         self.driver.get(URL_LAGOU_JOB % company_id)
-        self.parse_item()
+        self.parse_item(company_id=company_id, _id=_id)
         while self.parse_next():
             utils.info('---------------进入下一页,等待3秒-----------------')
             time.sleep(3)
-            self.parse_item()
+            self.parse_item(company_id=company_id, _id=_id)
         utils.info('--------------- 抓取数据结束 -----------------')
 
     def close(self):
@@ -140,9 +140,11 @@ class SpiderJob:
         return result
 
     # 处理单项
-    def parse_item(self):
+    def parse_item(self, company_id=None, _id=None):
         ele_items = self.driver.find_elements_by_xpath('//*[@id="containerCompanyPositionLists"]/div/div/ul/li')
         for ele in ele_items:
+            company_financing = ele.find_element_by_xpath('//*[@id="company_basic_info"]/div[1]/ul/li[2]/span')
+            company_employee = ele.find_element_by_xpath('//*[@id="company_basic_info"]/div[1]/ul/li[3]/span')
             company_name = ele.get_attribute('data-company')
             job_id = ele.get_attribute('data-positionid')
             job_salary = ele.get_attribute('data-salary')
@@ -152,7 +154,10 @@ class SpiderJob:
 
             item = {}
             try:
-                item['company_id'] = job_name.get_attribute('data-lg-tj-cid')
+                item['_id'] = _id
+                item['company_id'] = company_id
+                item['company_financing'] = company_financing.text
+                item['company_employee'] = company_employee.text
                 item['company_name'] = company_name
                 item['job_id'] = job_id
                 item['job_salary'] = job_salary

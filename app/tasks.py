@@ -19,6 +19,6 @@ def crawl_lagou_job():
     spider = SpiderJob()
     items = LagouCompany.objects.all()
     for item in items:
-        spider.crawl(company_id=item.company_id, save=False)
+        spider.crawl(_id=item.id, company_id=item.company_id, save=True)
     spider.close()
 
