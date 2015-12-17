@@ -45,10 +45,10 @@ class LagouJob(models.Model):
 
 
 class TaxAccount(models.Model):
-    wechat_id = models.CharField(max_length=32, null=True)
+    wechat_id = models.CharField(max_length=128, null=True)
     wechat_name = models.CharField(max_length=128, null=True)
     wechat_type = models.CharField(max_length=128, null=True)
-    wechat_code = models.CharField(max_length=512, null=True)
+    wechat_code = models.CharField(max_length=512, null=True, blank=True)
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
@@ -57,12 +57,13 @@ class TaxAccount(models.Model):
 
 
 class TaxArticle(models.Model):
+    wechat_id = models.CharField(max_length=128, null=True)
     title = models.CharField(max_length=256, null=True)
     desc = models.TextField(null=True)
-    image = models.URLField(null=True)
+    image = models.URLField(null=True, blank=True)
     publish = models.CharField(max_length=64, null=True)
     link = models.URLField(null=True)
-    url = models.URLField(null=True)
+    url = models.URLField(null=True, blank=True)
     created_at = models.DateField(default=timezone.now)
 
     class Meta:

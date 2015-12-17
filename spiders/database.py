@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from app.models import LagouCompany
 from app.models import LagouJob
+from app.models import TaxArticle
 import utils
+
 
 def save_lagou_company(args):
     item = LagouCompany(**args)
@@ -24,3 +26,7 @@ def save_lagou_job(args):
         item = LagouJob(**args)
         item.save()
 
+
+def save_tax_article(args):
+    item = TaxArticle(**args)
+    item.save()

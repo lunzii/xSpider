@@ -14,3 +14,7 @@ def lagou_job(request):
     tasks.crawl_lagou_job.delay()
     return HttpResponse('succeed')
 
+
+def tax_article(request):
+    tasks.crawl_tax_article.delay()
+    return HttpResponse('succeed')

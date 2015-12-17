@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^spider/lagou/company/', app.lagou_company),
-    url(r'^spider/lagou/job/', app.lagou_job)
+    url(r'^spider/lagou/job/', app.lagou_job),
+    url(r'^spider/tax/', app.tax_article)
 ]
