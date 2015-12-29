@@ -50,7 +50,6 @@ class SpiderArticle:
         else:
             ele = self.driver.find_element_by_class_name(class_account)
 
-            time.sleep(10)
             # 跳转页面
             href = ele.get_attribute('href')
             self.driver.get(URL_SOGOU_WECHAT % href)
@@ -58,7 +57,7 @@ class SpiderArticle:
             # 文章列表
             self.parse_item(wechat_id)
             utils.info('--------------- 抓取数据结束 -----------------')
-            time.sleep(30)
+            time.sleep(5)
 
     def close(self):
         self.driver.close()
@@ -105,7 +104,7 @@ class SpiderArticle:
             url = self.driver.current_url
             item['url'] = url
             self.save_item(item)
-            time.sleep(30)
+            time.sleep(5)
 
     def save_item(self, item):
         if self.save:

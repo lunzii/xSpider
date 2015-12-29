@@ -27,8 +27,8 @@ def crawl_lagou_job():
 
 @task
 def crawl_tax_article():
-    spider = SpiderArticle()
     items = TaxAccount.objects.all()
     for item in items:
+        spider = SpiderArticle()
         spider.crawl(wechat_id=item.wechat_id, save=True)
-    spider.close()
+        spider.close()
