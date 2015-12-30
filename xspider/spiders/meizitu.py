@@ -6,18 +6,17 @@ from xspider.items import MeizituItem
 
 # 列表页
 LIST_NEXT_PAGE_TITLE = u'下一页'
-LIST_NEXT_PAGE = "//div[@class='navigation']/div[@id='wp_page_numbers']/ul/li/a[text()='%s']/@href" % LIST_NEXT_PAGE_TITLE
+LIST_NEXT_PAGE = '//*[@id="wp_page_numbers"]/ul/li/a[text()="%s"]/@href' % LIST_NEXT_PAGE_TITLE
+
+LIST_URLS = '//*[@id="maincontent"]/div[1]/ul/li'
+LIST_URL_ITEM = 'div/div/a/@href'
 
 # 详情页面
-ITEM_TITLE = "//div[@class='metaRight']/h2/a/text()"
-# ITEM_TITLE = "//h2/a/text()"
-# ITEM_TITLE = "//h2/a/@title"
-ITEM_TAGS = "//div[@class='metaRight']/p/text()"
-LIST_URLS = "//div[@class='metaRight']/h2/a/@href"
-# LIST_URLS = "//h2/a/@href"
+ITEM_TITLE = '//*[@id="maincontent"]/div[1]/div[1]/h2/a/text()'
+ITEM_TAGS = '//*[@id="maincontent"]/div[1]/div[1]/p/text()'
 ITEM_DAY = "//div[@class='metaLeft']/div[@class='day']/text()"
 ITEM_MONTH_YEAR = "//div[@class='metaLeft']/div[@class='month_Year']/text()"
-ITEM_IMAGE_URLS = "//div[@class='postContent']/div[@id='picture']/p/img/@src"
+ITEM_IMAGE_URLS = '//*[@id="picture"]/p/img/@src'
 
 
 class MeizituSpider(scrapy.Spider):
@@ -32,19 +31,21 @@ class MeizituSpider(scrapy.Spider):
 
         # 起始页
         sel = Selector(response)
-        for url in sel.xpath(LIST_URLS).extract():
-            print('url: %s' % url)
-            request = scrapy.Request(url, callback=self._parse_item)
+        for url in sel.xpath(LIST_URLS):
+            url = url.xpath(LIST_URL_ITEM).extract()
+            print('url: %s' % url[0])
+            print('------------------------------------------------')
+            request = scrapy.Request(url[0], callback=self._parse_item)
             yield request
 
-        # 下一页
-        next_page = sel.xpath(LIST_NEXT_PAGE).extract()
-        print('next_page: %s' % next_page)
-        if len(next_page) > 0:
-            next_page_url = 'http://www.meizitu.com/a/%s' % next_page[0]
-            print('next_page_url: %s' % next_page_url)
-            request = scrapy.Request(next_page_url, callback=self.parse)
-            yield request
+        # # 下一页
+        # next_page = sel.xpath(LIST_NEXT_PAGE).extract()
+        # print('next_page: %s' % next_page)
+        # if len(next_page) > 0:
+        #     next_page_url = 'http://www.meizitu.com/a/%s' % next_page[0]
+        #     print('next_page_url: %s' % next_page_url)
+        #     request = scrapy.Request(next_page_url, callback=self.parse)
+        #     yield request
 
         print('---------------------end parse----------------------')
         pass

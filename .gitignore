@@ -52,3 +52,8 @@ docs/_build/
 
 # PyBuilder
 target/
+.DS_Store
+encodings.xml
+misc.xml
+xSpider.iml
+workspace.xml

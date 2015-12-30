@@ -3,7 +3,7 @@
 import scrapy
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
-from xspider.items import AlibabaChinaItem
+# from xspider.items import AlibabaChinaItem
 
 # 列表页数据
 LIST_ITEMS = '//*[@id="sw_maindata_asyncload"]/li'
@@ -49,19 +49,19 @@ class AlibabachinaSpider(scrapy.Spider):
         # 起始页
         sel = Selector(response)
         items = sel.xpath(LIST_ITEMS)
-        for index, item in enumerate(items):
-            ali = ItemLoader(item=AlibabaChinaItem(), selector=item)
-            ali.add_xpath('item_id', LIST_ITEM_ID)
-            ali.add_xpath('title', LIST_ITEM_TITLE)
-            ali.add_xpath('company_id', LIST_ITEM_COMPANY_ID)
-            ali.add_xpath('company_name', LIST_ITEM_COMPANY_NAME)
-            ali.add_xpath('company_url', LIST_ITEM_COMPANY_URL)
-            ali.add_xpath('company_location', LIST_ITEM_COMPANY_LOCATION)
-            ali.add_xpath('price', LIST_ITEM_PRICE)
-            ali.add_xpath('sold_item', LIST_ITEM_SOLD_ITEM)
-            ali.add_xpath('sold_person', LIST_ITEM_SOLD_PERSON)
-            ali.add_value('category', category)
-            yield ali.load_item()
+        # for index, item in enumerate(items):
+            # ali = ItemLoader(item=AlibabaChinaItem(), selector=item)
+            # ali.add_xpath('item_id', LIST_ITEM_ID)
+            # ali.add_xpath('title', LIST_ITEM_TITLE)
+            # ali.add_xpath('company_id', LIST_ITEM_COMPANY_ID)
+            # ali.add_xpath('company_name', LIST_ITEM_COMPANY_NAME)
+            # ali.add_xpath('company_url', LIST_ITEM_COMPANY_URL)
+            # ali.add_xpath('company_location', LIST_ITEM_COMPANY_LOCATION)
+            # ali.add_xpath('price', LIST_ITEM_PRICE)
+            # ali.add_xpath('sold_item', LIST_ITEM_SOLD_ITEM)
+            # ali.add_xpath('sold_person', LIST_ITEM_SOLD_PERSON)
+            # ali.add_value('category', category)
+            # yield ali.load_item()
 
         # 下一页
         next_page = sel.xpath(LIST_NEXT_PAGE).extract()

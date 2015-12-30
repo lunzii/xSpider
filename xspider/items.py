@@ -6,10 +6,10 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 from scrapy import Item, Field
-from scrapy.contrib.djangoitem import DjangoItem
-from apps.ebay.models import EbayStuff
-from apps.alibabachina.models import AlibabaChinaStuff
-from apps.aliexpress.models import AliexpressStuff
+# from scrapy.contrib.djangoitem import DjangoItem
+# from apps.ebay.models import EbayStuff
+# from apps.alibabachina.models import AlibabaChinaStuff
+# from apps.aliexpress.models import AliexpressStuff
 
 
 class XspiderItem(Item):
@@ -27,13 +27,13 @@ class MeizituItem(Item):
     image_urls = Field()
 
 
-class EbayItem(DjangoItem):
-    django_model = EbayStuff
-
-
-class AlibabaChinaItem(DjangoItem):
-    django_model = AlibabaChinaStuff
-
-
-class AliexpressItem(DjangoItem):
-    django_model = AliexpressStuff
+# class EbayItem(DjangoItem):
+#     django_model = EbayStuff
+#
+#
+# class AlibabaChinaItem(DjangoItem):
+#     django_model = AlibabaChinaStuff
+#
+#
+# class AliexpressItem(DjangoItem):
+#     django_model = AliexpressStuff

@@ -3,7 +3,7 @@
 import scrapy
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader, Identity
-from xspider.items import EbayItem
+# from xspider.items import EbayItem
 
 # 列表页数据
 LIST_ITEMS = "//ul[@id='ListViewInner']/li"
@@ -102,18 +102,18 @@ class EbaySpider(scrapy.Spider):
         # 起始页
         sel = Selector(response)
         items = sel.xpath(LIST_ITEMS)
-        for index, item in enumerate(items):
-            ebay = ItemLoader(item=EbayItem(), selector=item)
-            ebay.add_xpath('item_id', LIST_ITEM_ID)
-            ebay.add_xpath('url', LIST_ITEM_URL)
-            ebay.add_xpath('title', LIST_ITEM_TITLE)
-            ebay.add_xpath('subtitle', LIST_ITEM_SUBTITLE)
-            ebay.add_xpath('price', LIST_ITEM_PRICE)
-            ebay.add_xpath('price_type', LIST_ITEM_PRICE_TYPE)
-            ebay.add_xpath('sold', LIST_ITEM_EXTRA)
-            ebay.add_xpath('country', LIST_ITEM_COUNTRY)
-            ebay.add_value('category', category)
-            yield ebay.load_item()
+        # for index, item in enumerate(items):
+        #     ebay = ItemLoader(item=EbayItem(), selector=item)
+        #     ebay.add_xpath('item_id', LIST_ITEM_ID)
+        #     ebay.add_xpath('url', LIST_ITEM_URL)
+        #     ebay.add_xpath('title', LIST_ITEM_TITLE)
+        #     ebay.add_xpath('subtitle', LIST_ITEM_SUBTITLE)
+        #     ebay.add_xpath('price', LIST_ITEM_PRICE)
+        #     ebay.add_xpath('price_type', LIST_ITEM_PRICE_TYPE)
+        #     ebay.add_xpath('sold', LIST_ITEM_EXTRA)
+        #     ebay.add_xpath('country', LIST_ITEM_COUNTRY)
+        #     ebay.add_value('category', category)
+        #     yield ebay.load_item()
 
         # 下一页
         next_page = sel.xpath(LIST_NEXT_PAGE).extract()

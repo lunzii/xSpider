@@ -11,8 +11,13 @@ import requests
 from bs4 import BeautifulSoup
 from django.db import IntegrityError
 from scrapy.selector import Selector
-
+import leancloud
 from xspider import settings
+
+
+leancloud.init('8PLBPnjECEjhBzGmMy9erk6L-gzGzoHsz', 'vl5PdecpWBaC3IYtgBrSAoAl')
+Gallery = leancloud.Object.extend('Gallery')
+Photo = leancloud.Object.extend('Photo')
 
 
 class ImageDownloadPipeline(object):
@@ -20,24 +25,27 @@ class ImageDownloadPipeline(object):
         if spider.name not in ['meizitu']:
             return item
         print('---------------------ImageDownloadPipeline ----------------------')
-        if 'image_urls' in item:
-            dir_path = '%s/%s' % (settings.DATA_STORE, spider.name)
-
-            if not os.path.exists(dir_path):
-                os.makedirs(dir_path)
-
-            for image_url in item['image_urls']:
-                print('---------------------download image: %s' % image_url)
-                url = image_url.split('/')
-                file_path = '%s/%s_%s_%s_%s' % (dir_path, url[-4], url[-3], url[-2], url[-1])
-                if os.path.exists(file_path):
-                    continue
-                with open(file_path, 'wb') as handle:
-                    response = requests.get(image_url, stream=True)
-                    for block in response.iter_content(1024):
-                        if not block:
-                            break
-                        handle.write(block)
+        print(item)
+        # 去重
+        query = leancloud.Query(Gallery)
+        query.equal_to('url', item['url'][0])
+        urls = query.find()
+        if len(urls) > 0:
+            pass
+        else:
+            gallery = Gallery()
+            gallery.set('title', item['title'][0])
+            gallery.set('url', item['url'][0])
+            gallery.set('cover', item['image_urls'][0])
+            gallery.set('tag', item['tags'][0])
+            gallery.set('day', item['day'][0])
+            gallery.set('year', item['month_year'][0])
+            gallery.save()
+            for image in item['image_urls']:
+                photo = Photo()
+                photo.set('gallery', gallery)
+                photo.set('image', image)
+                photo.save()
         return item
 
 

@@ -3,7 +3,7 @@
 import scrapy
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
-from xspider.items import AliexpressItem
+# from xspider.items import AliexpressItem
 
 # 列表页数据
 LIST_ITEMS = '//*[@id="list-items"]/ul/li'
@@ -53,21 +53,21 @@ class AliexpressSpider(scrapy.Spider):
         # 起始页
         sel = Selector(response)
         items = sel.xpath(LIST_ITEMS)
-        for index, item in enumerate(items):
-            ali = ItemLoader(item=AliexpressItem(), selector=item)
-            ali.add_xpath('item_id', LIST_ITEM_ID)
-            ali.add_xpath('url', LIST_ITEM_URL)
-            ali.add_xpath('title', LIST_ITEM_TITLE)
-            ali.add_xpath('price', LIST_ITEM_PRICE)
-            ali.add_xpath('unit', LIST_ITEM_UNIT)
-            ali.add_xpath('min_order', LIST_ITEM_MIN_ORDER)
-            ali.add_xpath('shipping', LIST_ITEM_SHIPPING)
-            ali.add_xpath('rate_num', LIST_ITEM_RATE_NUM)
-            ali.add_xpath('order_num', LIST_ITEM_ORDER_NUM)
-            ali.add_xpath('store_name', LIST_ITEM_STORE_NAME)
-            ali.add_xpath('store_url', LIST_ITEM_STORE_URL)
-            ali.add_value('category', category)
-            yield ali.load_item()
+        # for index, item in enumerate(items):
+        #     ali = ItemLoader(item=AliexpressItem(), selector=item)
+        #     ali.add_xpath('item_id', LIST_ITEM_ID)
+        #     ali.add_xpath('url', LIST_ITEM_URL)
+        #     ali.add_xpath('title', LIST_ITEM_TITLE)
+        #     ali.add_xpath('price', LIST_ITEM_PRICE)
+        #     ali.add_xpath('unit', LIST_ITEM_UNIT)
+        #     ali.add_xpath('min_order', LIST_ITEM_MIN_ORDER)
+        #     ali.add_xpath('shipping', LIST_ITEM_SHIPPING)
+        #     ali.add_xpath('rate_num', LIST_ITEM_RATE_NUM)
+        #     ali.add_xpath('order_num', LIST_ITEM_ORDER_NUM)
+        #     ali.add_xpath('store_name', LIST_ITEM_STORE_NAME)
+        #     ali.add_xpath('store_url', LIST_ITEM_STORE_URL)
+        #     ali.add_value('category', category)
+        #     yield ali.load_item()
 
         # 下一页
         next_page = sel.xpath(LIST_NEXT_PAGE).extract()
