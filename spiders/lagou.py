@@ -3,12 +3,6 @@
 import time
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchAttributeException, NoSuchElementException
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.phantomjs.service import Service as PhantomJSService
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 import constants
 import utils
 
@@ -25,10 +19,12 @@ class SpiderCompany:
 
     def __init__(self):
         utils.info('__init__')
-        self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
-                                       chrome_options=constants.CHROME_OPTIONS)
-        # self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
-        #                                   service_args=constants.PHANTOMJS_ARGS)
+        if constants.USE_CHROME_DRIVER:
+            self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
+                                           chrome_options=constants.CHROME_OPTIONS)
+        else:
+            self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
+                                              service_args=constants.PHANTOMJS_ARGS)
         utils.info('--------------- 抓取数据开始 -----------------')
 
     # 爬取逻辑
@@ -104,10 +100,12 @@ class SpiderJob:
 
     def __init__(self):
         utils.info('__init__')
-        self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
-                                       chrome_options=constants.CHROME_OPTIONS)
-        # self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
-        #                                   service_args=constants.PHANTOMJS_ARGS)
+        if constants.USE_CHROME_DRIVER:
+            self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
+                                           chrome_options=constants.CHROME_OPTIONS)
+        else:
+            self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
+                                              service_args=constants.PHANTOMJS_ARGS)
         utils.info('--------------- 抓取数据开始 -----------------')
 
     # 爬取逻辑

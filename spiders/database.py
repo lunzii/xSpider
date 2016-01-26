@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 from app.models import LagouCompany
 from app.models import LagouJob
-from app.models import TaxArticle
+from app.models import WxGzhArticle
 import utils
 
 
+# 拉勾公司
 def save_lagou_company(args):
     item = LagouCompany(**args)
     item.save()
 
 
+# 拉勾职位
 def save_lagou_job(args):
     _id = args['_id']
     try:
@@ -27,6 +29,7 @@ def save_lagou_job(args):
         item.save()
 
 
-def save_tax_article(args):
-    item = TaxArticle(**args)
+# 公众号文章
+def save_wx_gzh_article(args):
+    item = WxGzhArticle(**args)
     item.save()

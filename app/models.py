@@ -44,7 +44,7 @@ class LagouJob(models.Model):
         verbose_name = u'拉勾职位'
 
 
-class TaxAccount(models.Model):
+class WxGzhAccount(models.Model):
     wechat_id = models.CharField(max_length=128, null=True)
     wechat_name = models.CharField(max_length=128, null=True)
     wechat_type = models.CharField(max_length=128, null=True)
@@ -52,11 +52,11 @@ class TaxAccount(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_tax_account'
-        verbose_name = u'税务订阅号'
+        db_table = 'spider_wx_gzh_account'
+        verbose_name = u'微信公众号'
 
 
-class TaxArticle(models.Model):
+class WxGzhArticle(models.Model):
     wechat_id = models.CharField(max_length=128, null=True)
     title = models.CharField(max_length=256, null=True)
     desc = models.TextField(null=True)
@@ -67,5 +67,5 @@ class TaxArticle(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_tax_article'
-        verbose_name = u'税务文章'
+        db_table = 'spider_wx_gzh_article'
+        verbose_name = u'微信公众号文章'

@@ -13,7 +13,6 @@ import requests
 import constants
 import utils
 
-
 # 公司链接
 URL_SOGOU_WECHAT = 'http://weixin.sogou.com%s'
 
@@ -25,10 +24,12 @@ class SpiderArticle:
 
     def __init__(self):
         utils.info('__init__')
-        self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
-                                       chrome_options=constants.CHROME_OPTIONS)
-        # self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
-        #                                   service_args=constants.PHANTOMJS_ARGS)
+        if constants.USE_CHROME_DRIVER:
+            self.driver = webdriver.Chrome(executable_path=constants.PATH_CHROME_DRIVER,
+                                           chrome_options=constants.CHROME_OPTIONS)
+        else:
+            self.driver = webdriver.PhantomJS(executable_path=constants.PATH_PHANTOMJS_BIN,
+                                              service_args=constants.PHANTOMJS_ARGS)
         utils.info('--------------- 抓取数据开始 -----------------')
 
     # 爬取逻辑
@@ -109,7 +110,7 @@ class SpiderArticle:
     def save_item(self, item):
         if self.save:
             import database
-            database.save_tax_article(item)
+            database.save_wx_gzh_article(item)
         else:
             utils.info('do not save')
 
@@ -119,5 +120,5 @@ if __name__ == '__main__':
     # spider = SpiderCompany()
     # spider.crawl()
     spider = SpiderArticle()
-    spider.crawl(keyword='mofczb')
+    spider.crawl(wechat_id='mofczb')
     spider.close()

@@ -3,7 +3,7 @@
 from celery import task
 from celery import shared_task
 from app.models import LagouCompany
-from app.models import TaxAccount
+from app.models import WxGzhAccount
 from spiders.lagou import SpiderCompany
 from spiders.lagou import SpiderJob
 from spiders.sogou import SpiderArticle
@@ -26,8 +26,8 @@ def crawl_lagou_job():
 
 
 @task
-def crawl_tax_article():
-    items = TaxAccount.objects.all()
+def crawl_wx_gzh_article():
+    items = WxGzhAccount.objects.all()
     for item in items:
         spider = SpiderArticle()
         spider.crawl(wechat_id=item.wechat_id, save=True)

@@ -3,8 +3,8 @@
 from django.contrib import admin
 from app.models import LagouCompany
 from app.models import LagouJob
-from app.models import TaxAccount
-from app.models import TaxArticle
+from app.models import WxGzhAccount
+from app.models import WxGzhArticle
 
 
 class LagouCompanyAdmin(admin.ModelAdmin):
@@ -23,16 +23,16 @@ class LagouJobAdmin(admin.ModelAdmin):
 admin.site.register(LagouJob, LagouJobAdmin)
 
 
-class TaxAccountAdmin(admin.ModelAdmin):
+class WxGzhAccountAdmin(admin.ModelAdmin):
     list_display = ['wechat_id', 'wechat_name', 'wechat_type', 'wechat_code']
     fields = []
 
-admin.site.register(TaxAccount, TaxAccountAdmin)
+admin.site.register(WxGzhAccount, WxGzhAccountAdmin)
 
 
-class TaxArticleAdmin(admin.ModelAdmin):
+class WxGzhArticleAdmin(admin.ModelAdmin):
     list_display = ['wechat_id', 'title', 'publish']
     fields = []
 
-admin.site.register(TaxArticle, TaxArticleAdmin)
+admin.site.register(WxGzhArticle, WxGzhArticleAdmin)
 
