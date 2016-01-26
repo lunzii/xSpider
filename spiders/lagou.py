@@ -2,7 +2,11 @@
 
 import time
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchAttributeException, NoSuchElementException
+from selenium.common.exceptions import NoSuchAttributeException, NoSuchElementException, TimeoutException
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import constants
 import utils
 
@@ -126,11 +130,12 @@ class SpiderJob:
 
     # 下一页
     def parse_next(self):
-        next_page = '//*[@id="containerCompanyPositionLists"]/div/div/div[2]/div/span[text()="%s"]' % u'下一页'
+        # //*[@id="containerCompanyDetails"]/div/div[2]/div[2]/div[3]/span[7]
+        next_page = '//*[@id="containerCompanyDetails"]/div/div/div[2]/div/span[text()="%s"]' % u'下一页'
         result = False
         try:
             ele_next_page = self.driver.find_element_by_xpath(next_page)
-            if 'pager_next_disabled' not in ele_next_page.get_attribute('class'):
+            if 'disable' not in ele_next_page.get_attribute('class'):
                 result = True
                 ele_next_page.click()
         except NoSuchElementException, e:
@@ -139,10 +144,19 @@ class SpiderJob:
 
     # 处理单项
     def parse_item(self, company_id=None, _id=None):
-        ele_items = self.driver.find_elements_by_xpath('//*[@id="containerCompanyPositionLists"]/div/div/ul/li')
+        # //*[@id="containerCompanyDetails"]/div/div[2]/div[2]/div[2]/ul/li[1]
+        class_item = '//*[@id="containerCompanyDetails"]/div/div[2]/div[2]/div[2]/ul/li'
+        try:
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((By.XPATH, class_item))
+            )
+        except TimeoutException:
+            return
+
+        ele_items = self.driver.find_elements_by_xpath(class_item)
+        company_financing = self.driver.find_element_by_xpath('//*[@id="basic_container"]/div[2]/ul/li[2]/span')
+        company_employee = self.driver.find_element_by_xpath('//*[@id="basic_container"]/div[2]/ul/li[3]/span')
         for ele in ele_items:
-            company_financing = ele.find_element_by_xpath('//*[@id="company_basic_info"]/div[1]/ul/li[2]/span')
-            company_employee = ele.find_element_by_xpath('//*[@id="company_basic_info"]/div[1]/ul/li[3]/span')
             company_name = ele.get_attribute('data-company')
             job_id = ele.get_attribute('data-positionid')
             job_salary = ele.get_attribute('data-salary')
@@ -186,5 +200,4 @@ if __name__ == '__main__':
     spider = SpiderJob()
     spider.crawl(company_id='11209')
     spider.crawl(company_id='89131')
-    spider.crawl(company_id='86283')
     spider.close()

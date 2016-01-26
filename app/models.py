@@ -8,6 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# 拉勾公司
 class LagouCompany(models.Model):
     company_id = models.CharField(max_length=16, null=True)
     company_name = models.CharField(max_length=256, null=True)
@@ -28,6 +29,7 @@ class LagouCompany(models.Model):
         verbose_name = u'拉勾公司'
 
 
+# 拉勾职位
 class LagouJob(models.Model):
     company_id = models.CharField(max_length=16, null=True)
     company_name = models.CharField(max_length=256, null=True)
@@ -44,6 +46,7 @@ class LagouJob(models.Model):
         verbose_name = u'拉勾职位'
 
 
+# 微信公众号
 class WxGzhAccount(models.Model):
     wechat_id = models.CharField(max_length=128, null=True)
     wechat_name = models.CharField(max_length=128, null=True)
@@ -56,6 +59,7 @@ class WxGzhAccount(models.Model):
         verbose_name = u'微信公众号'
 
 
+# 微信公众号文章
 class WxGzhArticle(models.Model):
     wechat_id = models.CharField(max_length=128, null=True)
     title = models.CharField(max_length=256, null=True)
@@ -69,3 +73,5 @@ class WxGzhArticle(models.Model):
     class Meta:
         db_table = 'spider_wx_gzh_article'
         verbose_name = u'微信公众号文章'
+
+

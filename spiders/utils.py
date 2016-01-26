@@ -12,10 +12,10 @@ def get_time_stamp():
 
 def info(msg):
     print(msg)
-    logger.info(msg)
+    # logger.info(msg)
 
 
 def error(msg):
     print(msg)
-    logger.error(msg)
+    # logger.error(msg)
 
