@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.9.2
 django-debug-toolbar==1.2.2
 MySQL-python==1.2.5
 requests==2.5.1
@@ -12,6 +12,8 @@ selenium==2.48.0
 
 #django-dynamic-scraper
 django-dynamic-scraper==0.10.0
+scrapy==1.0.3
+scrapy-djangoitem=1.0.0
 scrapyjs==0.1.1
 pillow==3.1.1
 

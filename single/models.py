@@ -25,7 +25,7 @@ class LagouCompany(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_lagou_company'
+        db_table = 'scraper_single_lagou_company'
         verbose_name = u'拉勾公司'
 
 
@@ -42,7 +42,7 @@ class LagouJob(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_lagou_job'
+        db_table = 'scraper_single_lagou_job'
         verbose_name = u'拉勾职位'
 
 
@@ -55,7 +55,7 @@ class WxGzhAccount(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_wx_gzh_account'
+        db_table = 'scraper_single_wx_gzh_account'
         verbose_name = u'微信公众号'
 
 
@@ -71,7 +71,7 @@ class WxGzhArticle(models.Model):
     created_at = models.DateField(default=timezone.now)
 
     class Meta:
-        db_table = 'spider_wx_gzh_article'
+        db_table = 'scraper_single_wx_gzh_article'
         verbose_name = u'微信公众号文章'
 
 

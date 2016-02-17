@@ -9,3 +9,6 @@ pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
+
+# 执行Scrapy爬虫
+scrapy crawl cocoa_controls_spider -a id=1 -a do_action=yes

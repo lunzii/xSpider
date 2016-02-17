@@ -10,6 +10,41 @@ from bs4 import BeautifulSoup
 from django.db import IntegrityError
 import leancloud
 
+import logging
+from scrapy.exceptions import DropItem
+from dynamic_scraper.models import SchedulerRuntime
+
+
+class CocoaControlsPipeline(object):
+
+    def __init__(self):
+        print('---------------------CocoaControlsPipeline init----------------------')
+
+    def process_item(self, item, spider):
+        print('---------------------process_item----', spider)
+        if spider.conf['do_action']:
+            try:
+                item['code_site'] = spider.ref_object
+
+                checker_rt = SchedulerRuntime(runtime_type='C')
+                checker_rt.save()
+                item['checker_runtime'] = checker_rt
+
+                item.save()
+                spider.action_successful = True
+                spider.log("Item saved.", logging.INFO)
+
+            except IntegrityError, e:
+                spider.log(str(e), logging.ERROR)
+                spider.log(str(item._errors), logging.ERROR)
+                raise DropItem("Missing attribute.")
+        else:
+            if not item.is_valid():
+                spider.log(str(item._errors), logging.ERROR)
+                raise DropItem("Missing attribute.")
+
+        return item
+
 
 leancloud.init('8PLBPnjECEjhBzGmMy9erk6L-gzGzoHsz', 'vl5PdecpWBaC3IYtgBrSAoAl')
 Gallery = leancloud.Object.extend('Gallery')

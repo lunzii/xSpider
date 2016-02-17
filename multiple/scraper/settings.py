@@ -18,19 +18,24 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xspider.settings")
 # Scrapy 配置
 BOT_NAME = 'multiple'
 
-SPIDER_MODULES = ['dynamic_scraper.spiders', 'multiple.spiders']
-NEWSPIDER_MODULE = 'multiple.spiders'
+SPIDER_MODULES = ['dynamic_scraper.spiders', 'multiple.scraper']
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 
+
+DSCRAPER_LOG_ENABLED = True
+DSCRAPER_LOG_LEVEL = 'INFO'
+DSCRAPER_LOG_LIMIT = 5
 DOWNLOAD_DELAY = 2    # 2s of delay
 
 ITEM_PIPELINES = {
+    'dynamic_scraper.pipelines.DjangoImagesPipeline': 200,
     'dynamic_scraper.pipelines.ValidationPipeline': 400,
-    'app.scraper.pipelines.ImageDownloadPipeline': 1,
+    'multiple.scraper.pipelines.CocoaControlsPipeline': 800,
 }
 
 # 文件存储
-DATA_STORE = '/Users/olunx/Documents/spiders'
+DATA_STORE = os.path.join(PROJECT_ROOT, '../files')
+IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
