@@ -9,7 +9,7 @@
 #
 
 # 添加Django支持
-import os
+import os, sys
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xspider.settings")
@@ -19,15 +19,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xspider.settings")
 BOT_NAME = 'multiple'
 
 SPIDER_MODULES = ['dynamic_scraper.spiders', 'multiple.scraper']
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 
 
-DSCRAPER_LOG_ENABLED = True
-DSCRAPER_LOG_LEVEL = 'INFO'
-DSCRAPER_LOG_LIMIT = 5
 DOWNLOAD_DELAY = 2    # 2s of delay
 
 ITEM_PIPELINES = {
@@ -38,4 +32,15 @@ ITEM_PIPELINES = {
 
 # 文件存储
 DATA_STORE = os.path.join(PROJECT_ROOT, '../files')
+
 IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
+IMAGES_THUMBS = {
+    'medium': (50, 50),
+    'small': (25, 25),
+}
+
+DSCRAPER_IMAGES_STORE_FORMAT = 'ALL'
+
+DSCRAPER_LOG_ENABLED = True
+DSCRAPER_LOG_LEVEL = 'INFO'
+DSCRAPER_LOG_LIMIT = 5
