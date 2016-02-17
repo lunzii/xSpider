@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'djcelery',
     'kombu.transport.django',
-    'app'
+    'dynamic_scraper',
+    'single',
+    'multiple'
 ]
 
 # Celery Settings

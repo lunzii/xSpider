@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from single.models import LagouCompany
+from single.models import WxGzhAccount
 from celery import task
-from celery import shared_task
-from app.models import LagouCompany
-from app.models import WxGzhAccount
-from spiders.lagou import SpiderCompany
-from spiders.lagou import SpiderJob
-from spiders.sogou import SpiderArticle
+
+from single.scraper.lagou import SpiderCompany
+from single.scraper.lagou import SpiderJob
+from single.scraper.sogou import SpiderArticle
 
 
 @task

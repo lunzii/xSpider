@@ -53,3 +53,4 @@ docs/_build/
 target/
 .DS_Store
 .idea/workspace.xml
+db.sqlite3

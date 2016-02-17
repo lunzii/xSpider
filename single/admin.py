@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from app.models import LagouCompany
-from app.models import LagouJob
-from app.models import WxGzhAccount
-from app.models import WxGzhArticle
+from single.models import LagouCompany
+from single.models import LagouJob
+from single.models import WxGzhAccount
+from single.models import WxGzhArticle
 
 
 class LagouCompanyAdmin(admin.ModelAdmin):

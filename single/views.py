@@ -2,7 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from app import tasks
+from single import tasks
 
 
 def lagou_company(request):

@@ -16,12 +16,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from app import views as app
+from single import views as single
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^spider/lagou/company/', app.lagou_company),
-    url(r'^spider/lagou/job/', app.lagou_job),
-    url(r'^spider/tax/', app.tax_article)
+    url(r'^spider/lagou/company/', single.lagou_company),
+    url(r'^spider/lagou/job/', single.lagou_job),
+    url(r'^spider/tax/', single.tax_article)
 ]
