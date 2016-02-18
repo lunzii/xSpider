@@ -15,20 +15,16 @@ from scrapy.exceptions import DropItem
 from dynamic_scraper.models import SchedulerRuntime
 
 
-class CocoaControlsPipeline(object):
-
-    def __init__(self):
-        print('---------------------CocoaControlsPipeline init----------------------')
+class CodeControlPipeline(object):
 
     def process_item(self, item, spider):
-        print('---------------------process_item----', spider)
         if spider.conf['DO_ACTION']:
             try:
                 item['code_site'] = spider.ref_object
 
-                # checker_rt = SchedulerRuntime(runtime_type='C')
-                # checker_rt.save()
-                # item['checker_runtime'] = checker_rt
+                checker_rt = SchedulerRuntime(runtime_type='C')
+                checker_rt.save()
+                item['checker_runtime'] = checker_rt
 
                 item.save()
                 spider.action_successful = True

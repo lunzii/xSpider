@@ -9,7 +9,7 @@
 #
 
 # 添加Django支持
-import os, sys
+import os
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xspider.settings")
@@ -27,7 +27,7 @@ DOWNLOAD_DELAY = 2    # 2s of delay
 ITEM_PIPELINES = {
     'dynamic_scraper.pipelines.DjangoImagesPipeline': 200,
     'dynamic_scraper.pipelines.ValidationPipeline': 400,
-    'multiple.scraper.pipelines.CocoaControlsPipeline': 800,
+    'multiple.scraper.pipelines.CodeControlPipeline': 800,
 }
 
 # 文件存储
@@ -36,11 +36,11 @@ DATA_STORE = os.path.join(PROJECT_ROOT, '../files')
 IMAGES_STORE = os.path.join(PROJECT_ROOT, '../thumbnails')
 IMAGES_THUMBS = {
     'medium': (50, 50),
-    'small': (25, 25),
 }
 
 DSCRAPER_IMAGES_STORE_FORMAT = 'ALL'
 
 DSCRAPER_LOG_ENABLED = True
-DSCRAPER_LOG_LEVEL = 'INFO'
+DSCRAPER_LOG_LEVEL = 'DEBUG'
 DSCRAPER_LOG_LIMIT = 5
+

@@ -45,11 +45,6 @@ INSTALLED_APPS = [
     'multiple'
 ]
 
-# Celery Settings
-import djcelery
-djcelery.setup_loader()
-BROKER_URL = 'django://'
-
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -191,3 +186,16 @@ LOGGING = {
 if DEBUG:
     for logger in LOGGING['loggers']:
         LOGGING['loggers'][logger]['handlers'] = ['console']
+
+
+# Celery Settings
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'django://'
+# BROKER_HOST = "localhost"
+# BROKER_PORT = 5672
+# BROKER_BACKEND = "django"
+# BROKER_USER = "guest"
+# BROKER_PASSWORD = "guest"
+# BROKER_VHOST = "/"
+# CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
